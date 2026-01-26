@@ -66,7 +66,7 @@ export default function ServicesPage() {
                 planName="Standard"
                 description="Pour les entrepreneurs"
                 price={549.99}
-                originalPrice={687.99}
+                originalPrice={689.99}
                 billingCycle=""
                 features={[
                   'Hébergement 1 an inclus',
@@ -88,7 +88,7 @@ export default function ServicesPage() {
                 planName="Plus"
                 description="Pour les projets ambitieux"
                 price={649.99}
-                originalPrice={812.99}
+                originalPrice={809.99}
                 billingCycle=""
                 features={[
                   'Hébergement 3 ans inclus',
@@ -110,7 +110,7 @@ export default function ServicesPage() {
                 planName="Elite"
                 description="Solution complète premium"
                 price={849.99}
-                originalPrice={1062.99}
+                originalPrice={1059.99}
                 billingCycle=""
                 features={[
                   'Hébergement 3 ans inclus',
@@ -165,7 +165,7 @@ export default function ServicesPage() {
                   planName="Refonte"
                   description="Modernisez votre site"
                   price={349.99}
-                  originalPrice={437.99}
+                  originalPrice={439.99}
                   billingCycle=""
                   features={[
                     'Nouveau design 2026',
