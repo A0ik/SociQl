@@ -10,7 +10,7 @@ const projects = [
     description: 'Site e-commerce pour un restaurant de poulet frit. Interface moderne, système de commande relier à Uber Eat / Deliveroo et intégration des paiements sécurisés.',
     tech: ['React.js', 'Next.js', 'Tailwind CSS', 'Stripe'],
     link: 'https://ocrispy.vercel.app',
-    image: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&q=80',
+    image: 'https://lepoulet.qc.ca/recettes/poulet-frit-croustillant-au-rice-krispies-sauce-ranch-minute/',
     category: 'Restaurant E-commerce',
   },
   {
@@ -18,7 +18,7 @@ const projects = [
     description: 'Site web pour un restaurant avec présentation des menus, galerie photos et système de contact. Design responsive et optimisé pour l\'expérience utilisateur.',
     tech: ['React.js', 'Next.js', 'Tailwind CSS', 'Responsive Design'],
     link: 'https://cagraille.vercel.app',
-    image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+    image: 'https://cagraille.vercel.app/_next/image?url=%2Fimages%2Fambiance.png&w=1080&q=75',
     category: 'Restaurant Vitrine',
   },
   {
