@@ -23,9 +23,9 @@ const testimonials = [
     image: "💆‍♀️",
   },
   {
-    name: "Marc Laurent",
+    name: "Mathieu Rodriguez",
     company: "TechStart Solutions",
-    role: "CEO",
+    role: "CEO de l'auto école Didier",
     text: "Équipe ultra réactive et professionnelle. Notre e-commerce tourne parfaitement, zéro bug depuis le lancement.",
     rating: 5,
     date: "Novembre 2024",
