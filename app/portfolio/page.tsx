@@ -44,6 +44,15 @@ const projects = [
     image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
     category: 'IA & Automation',
   },
+    {
+    title: 'IA sur demande',
+    description:
+      "En plus des devis, des intelligences artificielles sur demande peuvent être réalisé, afin d'automatiser vos tâches, aller plus vite et ainsi convertir plus de clients",
+    tech: ['Python', 'N8N', 'OpenAI API', 'JSON', 'Automation', 'Anthropic ai'],
+    link: '#contact',
+    image: 'https://images.unsplash.com/photo-1677442136019-21780ecad995?w=800&q=80',
+    category: 'IA & Automation',
+  },
 ];
 
 export default function PortfolioPage() {

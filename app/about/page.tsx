@@ -108,7 +108,7 @@ export default function AboutPage() {
                 Salman Bacherki
               </h2>
               <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                L'informatique est un domaine qui me passione, me passionne tellement que j'ai transformé cette passion en expertise concrète à travers des projets réels qui ont impacté non seulement des particuliers mais aussi des entreprises. Mon objectif est d'intégrer une{' '}
+                L'informatique est un domaine qui me passionne, me passionne tellement que j'ai transformé cette passion en expertise concrète à travers des projets réels qui ont impacté non seulement des particuliers mais aussi des entreprises. Mon objectif est d'intégrer une{' '}
                 <span className="font-semibold" style={{ color: BRAND_TITLE }}>
                   Prépa MP2I
                 </span>{' '}
