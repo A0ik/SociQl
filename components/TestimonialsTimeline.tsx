@@ -5,7 +5,7 @@ import { Star, Quote } from "lucide-react";
 
 const testimonials = [
   {
-    name: "Thomas Dubois",
+    name: "Morgan Kichenassamy",
     company: "Le Bistrot Moderne",
     role: "Restaurateur",
     text: "Site magnifique livré en 2 semaines ! Les réservations en ligne ont boosté notre chiffre d'affaires de 40%.",
