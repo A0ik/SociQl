@@ -69,9 +69,9 @@ export const ShootingStars = () => {
         endY
       );
 
-      gradient.addColorStop(0, `rgba(0, 0, 0, ${meteor.opacity})`);
-      gradient.addColorStop(0.3, `rgba(0, 0, 0, ${meteor.opacity * 0.6})`);
-      gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      gradient.addColorStop(0, `rgba(249, 115, 22, ${meteor.opacity})`);
+      gradient.addColorStop(0.3, `rgba(249, 115, 22, ${meteor.opacity * 0.6})`);
+      gradient.addColorStop(1, 'rgba(249, 115, 22, 0)');
 
       // Dessiner la traînée
       ctx.strokeStyle = gradient;
@@ -84,7 +84,7 @@ export const ShootingStars = () => {
       ctx.stroke();
 
       // Dessiner l'étoile à la tête
-      ctx.fillStyle = `rgba(0, 0, 0, ${meteor.opacity})`;
+      ctx.fillStyle = `rgba(249, 115, 22, ${meteor.opacity})`;
       ctx.beginPath();
       ctx.arc(meteor.x, meteor.y, 2, 0, Math.PI * 2);
       ctx.fill();

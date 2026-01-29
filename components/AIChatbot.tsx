@@ -54,49 +54,114 @@ function normalizeText(text: string): string {
 function getSmartResponse(userMessage: string): string {
   const normalized = normalizeText(userMessage);
   
+  // Messages vides ou incompréhensibles
+  if (!normalized.trim() || normalized.length < 2) {
+    return "Hmm, j'ai pas bien capté ton message 😅 Tu peux reformuler ? Ou dis-moi juste ce que tu cherches : prix, portfolio, devis...";
+  }
+
+  // Messages bizarres / spam / clavier chat
+  if (/^[qwertyuiopasdfghjklzxcvbnm]{10,}$|^[0-9]{10,}$|^[!@#$%^&*()]{5,}$/i.test(normalized)) {
+    return "Haha, je crois que ton clavier a fait n'importe quoi ! 😄 Pas de souci, dis-moi ce que tu veux savoir : nos services, les prix, le portfolio ?";
+  }
+
+  // Insultes ou langage inapproprié (reste pro)
+  if (/(connard|putain|merde|con|idiot|nul|naze)/i.test(normalized)) {
+    return "Hey, restons courtois ! 😊 Je suis là pour t'aider avec ton projet web. Qu'est-ce qui t'intéresse ?";
+  }
+
+  // Questions existentielles / philosophiques
+  if (/(sens de la vie|pourquoi on existe|dieu|42|philosophie)/i.test(normalized)) {
+    return "Ah la grande question ! 🤔 Moi je dirais : créer des sites web incroyables, c'est déjà un bon début ! 😄 Sinon, je peux t'aider avec un projet concret ?";
+  }
+
+  // Blagues / humour
+  if (/(blague|joke|rigole|drôle|mdr|lol|ptdr)/i.test(normalized)) {
+    return "Haha j'adore l'humour ! 😄 Mais je suis surtout bon pour créer des sites web. Tu as un projet ? Ou tu veux juste discuter des prix ?";
+  }
+
+  // Questions sur l'IA elle-même
+  if (/(qui es-tu|c'est quoi|tu es qui|chatbot|robot|ia|intelligence)/i.test(normalized) && /(toi|tu)/i.test(normalized)) {
+    return "Moi ? Je suis le chatbot de SociQl ! 🤖 Je suis là pour répondre à tes questions sur nos services, te donner des prix, te montrer nos projets... Bref, t'aider à lancer ton site web ! Qu'est-ce qui t'intéresse ?";
+  }
+
+  // Questions sur la météo / hors sujet
+  if (/(météo|temps qu'il fait|température|soleil|pluie|neige)/i.test(normalized)) {
+    return "La météo ? 🌤️ J'y connais rien ! Par contre, je peux te parler de sites web, d'apps, de prix... C'est quoi ton projet ?";
+  }
+
+  // Questions sur le sport / actualités
+  if (/(foot|football|psg|om|tennis|basket|sport|match)/i.test(normalized)) {
+    return "Le sport c'est cool ! ⚽ Mais moi je suis plutôt dev web. Tu aurais besoin d'un site pour ton club ou ton équipe ? 😊";
+  }
+
+  // Questions sur bouffe / restaurants (mais pas pour un projet)
+  if (/(faim|manger|pizza|burger|resto|restaurant)/i.test(normalized) && !/(site|web|projet|créer)/i.test(normalized)) {
+    return "J'ai pas de pizzas malheureusement ! 🍕 Mais si tu as un resto et que tu veux un site web avec menu digital, commande en ligne... là je peux t'aider ! On parle projet ?";
+  }
+
   // Salutations
-  if (/(salut|bonjour|bonsoir|coucou|hey|hello|yo|wesh|ouais|oe)/i.test(normalized)) {
+  if (/(salut|bonjour|bonsoir|coucou|hey|hello|yo|wesh|ouais|oe)/i.test(normalized) && normalized.split(' ').length <= 3) {
     const responses = [
-      "Hey ! 👋 Content de te parler ! Je peux t'aider avec nos services, nos prix, te montrer notre portfolio ou prendre tes coordonnées pour un devis. Qu'est-ce qui t'intéresse ?",
-      "Salut ! 😊 Super de te voir ici ! Tu veux en savoir plus sur quoi ? Nos projets, nos tarifs, ou tu as besoin d'un devis ?",
-      "Yo ! 🔥 Comment je peux t'aider aujourd'hui ? Services, prix, portfolio... dis-moi tout !",
+      "Salut ! 👋 Je peux t'aider avec quoi aujourd'hui ? Prix, portfolio, devis... ?",
+      "Hey ! 😊 T'as un projet en tête ou tu veux juste des infos ?",
+      "Yo ! 🔥 Dis-moi ce que tu cherches et je t'aide !",
     ];
     return responses[Math.floor(Math.random() * responses.length)];
+  }
+
+  // Ça va / Comment ça va
+  if (/(ça va|comment ça va|tu vas bien|comment tu vas|cv)/i.test(normalized) && normalized.split(' ').length <= 5) {
+    return "Ça roule ! 😎 Et toi, t'as un projet web en tête ? Ou tu veux juste discuter des tarifs ?";
+  }
+
+  // Oui / Non / OK (réponses courtes)
+  if (/^(oui|non|ok|d'accord|peut-être|ouais|nan|nope)$/i.test(normalized.trim())) {
+    return "OK ! Mais du coup... tu cherches quoi exactement ? 😄 Prix, portfolio, devis ?";
+  }
+
+  // Merci
+  if (/(merci|thank|thx|thanks)/i.test(normalized)) {
+    return "Avec plaisir ! 😊 Hésite pas si t'as d'autres questions !";
+  }
+
+  // Au revoir
+  if (/(au revoir|bye|ciao|tchao|salut|à plus|à bientôt)/i.test(normalized) && normalized.split(' ').length <= 3) {
+    return "À bientôt ! 👋 N'hésite pas si tu as un projet !";
   }
 
   // Prix / Tarifs avec contexte
   if (/(prix|tarif|coût|combien|budget|€|euro|payer|payement|cher|coute)/i.test(normalized)) {
     if (/site|web|internet/.test(normalized)) {
-      return "Pour un site web, voici nos tarifs 💰 :\n\n• Site vitrine simple : 800-1200€\n• Site restaurant avec menu : 1200-1800€\n• Site e-commerce complet : 1500-3000€\n\nTout dépend de tes besoins ! Tu veux un devis personnalisé ? Donne-moi ton email et je te réponds sous 24h ! 📧";
+      return "Nos tarifs site web 💰 :\n\n• Standard : 549€ (site vitrine)\n• Plus : 649€ (site pro + SEO)\n• Elite : 849€ (site premium complet)\n• E-commerce : 999€ (boutique en ligne)\n\nPromo -20% en cours ! Tu veux un devis perso ? Donne-moi ton email ! 📧";
     }
     if (/ia|intelligence|automatisation|bot/.test(normalized)) {
-      return "Pour les solutions IA 🤖 :\n\n• Chatbot simple : à partir de 500€\n• Automatisation de processus : 1000-2000€\n• Solution IA complexe : sur devis\n\nC'est quoi ton projet exactement ? Je peux t'orienter vers la meilleure solution !";
+      return "Solutions IA 🤖 :\n\n• Chatbot : à partir de 500€\n• Automatisation : 1000-2000€\n• Solution sur mesure : sur devis\n\nC'est quoi ton idée exactement ?";
     }
-    return "Nos tarifs varient selon ton projet ! 💰\n\n• Site vitrine : 800-1200€\n• Site e-commerce : 1500-3000€\n• Application web : 2000-5000€\n• Solution IA : sur devis\n\nTu as un projet précis en tête ? Raconte-moi et je te fais un devis perso ! 😊";
+    return "Nos tarifs 💰 :\n\n• Site vitrine : 549€\n• Site pro : 649€\n• Site premium : 849€\n• E-commerce : 999€\n\nPromo -20% ! Tu veux plus d'infos sur un service en particulier ?";
   }
 
   // Délai / Temps avec plus de contexte
   if (/(délai|temps|combien de temps|durée|quand|rapidement|vite|livre|livraison|urgent|rapide)/i.test(normalized)) {
     if (/urgent/.test(normalized)) {
-      return "Tu es pressé ? Je comprends ! ⚡\n\nPour un projet urgent :\n• Site vitrine : 5-7 jours\n• Site e-commerce : 2-3 semaines en rush\n\nOn peut discuter de ton deadline exacte. Donne-moi tes coordonnées et on trouve une solution ! 🚀";
+      return "Projet urgent ? On gère ! ⚡\n\n• Site vitrine : 7-10 jours\n• E-commerce : 2-3 semaines\n\nDonne-moi tes coordonnées et on trouve une solution rapide ! 🚀";
     }
-    return "Les délais dépendent du projet ⏱️ :\n\n• Site vitrine simple : 1-2 semaines\n• Site e-commerce : 3-4 semaines\n• Application complexe : 1-3 mois\n• Solution IA : 2-4 semaines\n\nT'as une deadline en tête ? On s'adapte à tes besoins ! 💪";
+    return "Délais moyens ⏱️ :\n\n• Site vitrine : 1-2 semaines\n• E-commerce : 3-4 semaines\n• Solution IA : 2-4 semaines\n\nT'as une deadline précise ?";
   }
 
   // Services avec détection du type
   if (/(service|faire|proposer|offre|développer|créer|site|application|app|vous faites|tu fais)/i.test(normalized)) {
     if (/restaurant|resto|bouffe|menu/.test(normalized)) {
-      return "Pour les restaurants, on est des pros ! 🍔\n\n• Site vitrine avec menu digital\n• Système de commande en ligne\n• Intégration Uber Eats/Deliveroo\n• Menu QR code\n• Photos professionnelles\n• SEO local pour être trouvé sur Google\n\nOn a fait OCrispy, Cagraille, Dwich62... Regarde notre portfolio ! 🔥";
+      return "Spécial restaurants ! 🍔\n\n• Site avec menu digital\n• Commande en ligne\n• Intégration Uber Eats\n• Menu QR code\n• SEO local\n\nOn a fait OCrispy, Dwich62... Regarde le portfolio ! 🔥";
     }
     if (/ia|intelligence|automatisation|automatiser/.test(normalized)) {
-      return "Nos solutions IA c'est notre kiff ! 🤖\n\n• Chatbots intelligents (comme moi !)\n• Automatisation de devis\n• Réponses emails automatiques\n• Analyse de données\n• Workflows N8N\n\nOn a fait gagner 95% de temps à nos clients ! T'as un process à automatiser ? 💡";
+      return "Solutions IA ! 🤖\n\n• Chatbots (comme moi !)\n• Automatisation devis\n• Emails automatiques\n• Workflows N8N\n\n95% de temps gagné pour nos clients ! T'as quoi à automatiser ?";
     }
-    return "On fait plein de trucs ! 🚀\n\n• Sites web (restaurants, e-commerce, vitrines)\n• Applications web sur mesure\n• Solutions IA et automatisation\n• Intégrations API (Stripe, etc.)\n• Chatbots comme moi 😎\n• Optimisation SEO\n\nQu'est-ce qui t'intéresse le plus ?";
+    return "On fait tout en web ! 🚀\n\n• Sites (restaurants, e-commerce, vitrines)\n• Apps sur mesure\n• Solutions IA\n• Chatbots\n• SEO\n\nQu'est-ce qui t'intéresse ?";
   }
 
   // Portfolio / Exemples
   if (/(portfolio|exemple|projet|réalisation|travail|voir|montrer|ocrispy|cagraille|dwich)/i.test(normalized)) {
-    return "Nos derniers projets qui cartonnent ! 🎨\n\n• **OCrispy** - Site e-commerce pour poulet frit avec paiement Stripe\n• **Cagraille** - Site vitrine resto avec galerie photos pro\n• **Dwich62** - Menu digital + système de panier\n• **IA Devis** - Bot qui automatise les devis immobilier\n\nVa sur notre page Portfolio pour tout voir en détail ! Tu veux un site dans ce style ? 🔥";
+    return "Nos projets qui cartonnent ! 🎨\n\n• **OCrispy** - E-commerce poulet frit\n• **Cagraille** - Site resto + photos pro\n• **Dwich62** - Menu digital + panier\n• **IA Devis** - Bot automatique\n\nVa sur notre Portfolio pour tout voir ! Tu veux un site similaire ?";
   }
 
   // Contact / Devis avec plus d'options

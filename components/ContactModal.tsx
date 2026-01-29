@@ -1,27 +1,26 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, PhoneCall, FileText, Send, Loader2, Sparkles, Link as LinkIcon } from "lucide-react";
+import { X, MessageCircle, FileText, Send, Loader2, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
   openDirectlyToForm?: boolean;
+  preSelectedService?: string;
 }
 
 const services = [
-  { id: "standard", name: "Standard - Site vitrine", value: "Standard - 549.99€" },
-  { id: "plus", name: "Plus - Projet ambitieux", value: "Plus - 649.99€" },
-  { id: "elite", name: "Elite - Solution premium", value: "Elite - 849.99€" },
-  { id: "maintenance", name: "Maintenance - Support continu", value: "Maintenance - 49.99€/mois" },
-  { id: "refonte", name: "Refonte - Modernisation", value: "Refonte - 349.99€" },
-  { id: "ecommerce", name: "E-commerce - Boutique en ligne", value: "E-commerce - 999.99€" },
-  { id: "ia", name: "IA personnalisée - Sur mesure", value: "IA personnalisée" },
+  { id: "site-web", name: "Site Web Vitrine", value: "Site Web Vitrine" },
+  { id: "ecommerce", name: "E-commerce", value: "E-commerce" },
+  { id: "refonte", name: "Refonte de Site", value: "Refonte de Site" },
+  { id: "maintenance", name: "Maintenance & Support", value: "Maintenance & Support" },
+  { id: "ia", name: "Solutions IA & Automatisation", value: "Solutions IA & Automatisation" },
 ];
 
-export function ContactModal({ isOpen, onClose, openDirectlyToForm = false }: ContactModalProps) {
+export function ContactModal({ isOpen, onClose, openDirectlyToForm = false, preSelectedService = "" }: ContactModalProps) {
   const [showForm, setShowForm] = useState(openDirectlyToForm);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
@@ -37,15 +36,30 @@ export function ContactModal({ isOpen, onClose, openDirectlyToForm = false }: Co
     details: "",
   });
 
-  // Ouvrir directement le formulaire si demandé
-  useState(() => {
+  useEffect(() => {
     if (openDirectlyToForm && isOpen) {
       setShowForm(true);
     }
-  });
+  }, [openDirectlyToForm, isOpen]);
 
-  const handleCall = () => {
-    window.location.href = "tel:+33749412756";
+  useEffect(() => {
+    if (preSelectedService && isOpen) {
+      setFormData((prev) => ({
+        ...prev,
+        services: [preSelectedService],
+      }));
+    }
+  }, [preSelectedService, isOpen]);
+
+  const handleWhatsAppDirect = () => {
+    const message = encodeURIComponent("Bonjour ! Je suis intéressé, pouvez-vous me donner des informations ?");
+    window.open(`https://wa.me/33749412756?text=${message}`, '_blank');
+    onClose();
+  };
+
+  const handleWhatsAppDevis = () => {
+    const message = encodeURIComponent("Bonjour ! Je souhaite demander un devis. Pouvez-vous me donner plus d'informations ?");
+    window.open(`https://wa.me/33749412756?text=${message}`, '_blank');
     onClose();
   };
 
@@ -111,6 +125,17 @@ export function ContactModal({ isOpen, onClose, openDirectlyToForm = false }: Co
     }
   };
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -118,7 +143,7 @@ export function ContactModal({ isOpen, onClose, openDirectlyToForm = false }: Co
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md p-2 sm:p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
           onClick={handleBackdropClick}
         >
           <motion.div
@@ -129,9 +154,7 @@ export function ContactModal({ isOpen, onClose, openDirectlyToForm = false }: Co
             className="relative w-full max-w-2xl max-h-[95vh] bg-white rounded-2xl sm:rounded-3xl shadow-2xl overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Header avec gradient noir pur */}
-            <div className="relative bg-black text-white p-4 sm:p-8 overflow-hidden">
-              {/* Effet de brillance animé */}
+            <div className="relative bg-gradient-to-r from-orange-600 to-orange-500 text-white p-4 sm:p-8 overflow-hidden">
               <motion.div
                 className="absolute inset-0 opacity-10"
                 animate={{
@@ -149,9 +172,10 @@ export function ContactModal({ isOpen, onClose, openDirectlyToForm = false }: Co
                   onClose();
                   setShowForm(false);
                 }}
-                className="absolute top-3 right-3 sm:top-6 sm:right-6 text-white/80 hover:text-white transition-colors hover:rotate-90 duration-300 z-10"
+                className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/30 backdrop-blur-sm transition-all duration-300 hover:rotate-90"
+                aria-label="Fermer"
               >
-                <X className="w-5 h-5 sm:w-6 sm:h-6" />
+                <X className="w-7 h-7 sm:w-8 sm:h-8 text-white" />
               </button>
               
               <div className="relative z-10">
@@ -168,7 +192,7 @@ export function ContactModal({ isOpen, onClose, openDirectlyToForm = false }: Co
                 <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-1 sm:mb-2">
                   {showForm ? "Devis gratuit" : "Démarrons votre projet"}
                 </h2>
-                <p className="text-sm sm:text-base text-gray-300">
+                <p className="text-sm sm:text-base text-orange-100">
                   {showForm
                     ? "Remplissez ce formulaire simple et recevez une réponse personnalisée"
                     : "Choisissez votre mode de contact préféré"}
@@ -176,269 +200,199 @@ export function ContactModal({ isOpen, onClose, openDirectlyToForm = false }: Co
               </div>
             </div>
 
-            {/* Content */}
-            <div className="p-4 sm:p-8 max-h-[calc(95vh-140px)] overflow-y-auto">
+            <div className="p-4 sm:p-8 max-h-[calc(95vh-140px)] overflow-y-auto custom-scrollbar">
               {!showForm ? (
-                /* Choix du mode de contact */
                 <div className="space-y-3 sm:space-y-4">
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
-                    onClick={handleCall}
-                    className="w-full flex items-center justify-between p-4 sm:p-6 border-2 border-gray-200 rounded-xl sm:rounded-2xl hover:border-black hover:bg-gray-50 transition-all group relative overflow-hidden"
+                    onClick={handleWhatsAppDirect}
+                    className="w-full flex items-center justify-between p-4 sm:p-6 border-2 border-orange-200 rounded-xl sm:rounded-2xl hover:border-orange-500 hover:bg-orange-50 transition-all group"
                   >
-                    <div className="flex items-center gap-3 sm:gap-4 relative z-10">
-                      <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gradient-to-br from-black to-gray-700 rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
-                        <PhoneCall className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-14 sm:h-14 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg">
+                        <MessageCircle className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
                       </div>
                       <div className="text-left">
-                        <h3 className="text-base sm:text-xl font-bold mb-0 sm:mb-1">Appeler</h3>
-                        <p className="text-xs sm:text-sm text-gray-500">
-                          +33 7 49 41 27 56
-                        </p>
+                        <h3 className="text-base sm:text-xl font-bold text-gray-900">Devis via WhatsApp</h3>
+                        <p className="text-xs sm:text-sm text-gray-500">Réponse Rapide</p>
                       </div>
                     </div>
-                    <div className="text-xl sm:text-2xl text-gray-400 group-hover:text-black group-hover:translate-x-2 transition-all">
-                      →
-                    </div>
+                    <div className="text-xl sm:text-2xl text-gray-400 group-hover:text-orange-500 group-hover:translate-x-2 transition-all">→</div>
                   </motion.button>
 
                   <motion.button
                     whileHover={{ scale: 1.02, x: 5 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleDevisClick}
-                    className="w-full flex items-center justify-between p-4 sm:p-6 border-2 border-black bg-black text-white rounded-xl sm:rounded-2xl hover:bg-gray-900 transition-all group relative overflow-hidden"
+                    className="w-full flex items-center justify-between p-4 sm:p-6 border-2 border-orange-500 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-xl sm:rounded-2xl hover:from-orange-600 hover:to-orange-700 transition-all group shadow-lg"
                   >
-                    <div className="flex items-center gap-3 sm:gap-4 relative z-10">
-                      <div className="w-10 h-10 sm:w-14 sm:h-14 bg-white/10 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform border border-white/20">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <div className="w-10 h-10 sm:w-14 sm:h-14 bg-white/20 backdrop-blur-sm rounded-xl sm:rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform border border-white/30">
                         <FileText className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
                       </div>
                       <div className="text-left">
-                        <h3 className="text-base sm:text-xl font-bold mb-0 sm:mb-1">Devis personnalisé</h3>
-                        <p className="text-xs sm:text-sm text-gray-300">
-                          Réponse par email sous 24h
-                        </p>
+                        <h3 className="text-base sm:text-xl font-bold">Devis en ligne</h3>
+                        <p className="text-xs sm:text-sm text-orange-100">Formulaire détaillé • Email</p>
                       </div>
                     </div>
-                    <div className="text-xl sm:text-2xl text-white/70 group-hover:translate-x-2 transition-all">
-                      →
-                    </div>
+                    <div className="text-xl sm:text-2xl text-white/70 group-hover:translate-x-2 transition-all">→</div>
                   </motion.button>
                 </div>
               ) : (
-                /* Formulaire de devis optimisé mobile */
                 <motion.form
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   onSubmit={handleSubmit}
                   className="space-y-4 sm:space-y-6"
                 >
-                  {/* Prénom et Nom */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                      <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-gray-700">
-                        Prénom *
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Prénom *</label>
                       <input
                         type="text"
                         required
                         value={formData.prenom}
-                        onChange={(e) =>
-                          setFormData({ ...formData, prenom: e.target.value })
-                        }
-                        className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
-                        placeholder="Jean"
+                        onChange={(e) => setFormData({...formData, prenom: e.target.value})}
+                        className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm sm:text-base"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-gray-700">
-                        Nom *
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Nom *</label>
                       <input
                         type="text"
                         required
                         value={formData.nom}
-                        onChange={(e) =>
-                          setFormData({ ...formData, nom: e.target.value })
-                        }
-                        className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
-                        placeholder="Dupont"
+                        onChange={(e) => setFormData({...formData, nom: e.target.value})}
+                        className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm sm:text-base"
                       />
                     </div>
                   </div>
 
-                  {/* Email et Téléphone */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Email *</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({...formData, email: e.target.value})}
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm sm:text-base"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Téléphone *</label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.telephone}
+                      onChange={(e) => setFormData({...formData, telephone: e.target.value})}
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm sm:text-base"
+                    />
+                  </div>
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                      <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-gray-700">
-                        Email *
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Nom du projet</label>
                       <input
-                        type="email"
-                        required
-                        value={formData.email}
-                        onChange={(e) =>
-                          setFormData({ ...formData, email: e.target.value })
-                        }
-                        className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
-                        placeholder="jean@exemple.fr"
+                        type="text"
+                        value={formData.nomSite}
+                        onChange={(e) => setFormData({...formData, nomSite: e.target.value})}
+                        className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm sm:text-base"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-gray-700">
-                        Téléphone *
-                      </label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Site actuel (si existant)</label>
                       <input
-                        type="tel"
-                        required
-                        value={formData.telephone}
-                        onChange={(e) =>
-                          setFormData({ ...formData, telephone: e.target.value })
-                        }
-                        className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
-                        placeholder="+33 6 12 34 56 78"
+                        type="url"
+                        value={formData.lienSite}
+                        onChange={(e) => setFormData({...formData, lienSite: e.target.value})}
+                        className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm sm:text-base"
                       />
                     </div>
                   </div>
 
-                  {/* Nom du projet */}
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-gray-700">
-                      Nom de votre projet
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.nomSite}
-                      onChange={(e) =>
-                        setFormData({ ...formData, nomSite: e.target.value })
-                      }
-                      className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
-                      placeholder="Ex: Mon Restaurant"
-                    />
-                  </div>
-
-                  {/* Lien du site (toujours visible) */}
-                  <div>
-                    <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-gray-700 flex items-center gap-2">
-                      <LinkIcon className="w-3 h-3 sm:w-4 sm:h-4" />
-                      Lien de votre site internet actuel (si vous en avez un)
-                    </label>
-                    <input
-                      type="url"
-                      value={formData.lienSite}
-                      onChange={(e) =>
-                        setFormData({ ...formData, lienSite: e.target.value })
-                      }
-                      className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent transition-all"
-                      placeholder="https://mon-site-actuel.fr"
-                    />
-                  </div>
-
-                  {/* Services */}
-                  <div>
-                    <label className="block text-xs sm:text-sm font-semibold mb-2 sm:mb-3 text-gray-700">
-                      Services souhaités * ({formData.services.length} sélectionné{formData.services.length > 1 ? 's' : ''})
-                    </label>
-                    <div className="space-y-2 max-h-40 sm:max-h-56 overflow-y-auto border-2 border-gray-200 rounded-lg sm:rounded-xl p-2 sm:p-4 bg-gray-50 custom-scrollbar">
-                      {services.map((service) => {
-                        const isSelected = formData.services.includes(service.value);
-                        return (
-                          <label
-                            key={service.id}
-                            className={`flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg cursor-pointer transition-all ${
-                              isSelected
-                                ? "bg-gray-800 text-white shadow-md"
-                                : "bg-white hover:bg-gray-100 border border-gray-200"
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={isSelected}
-                              onChange={() => handleServiceToggle(service.value)}
-                              className="w-4 h-4 sm:w-5 sm:h-5 rounded border-2 border-gray-300 text-black focus:ring-black cursor-pointer"
-                            />
-                            <span className={`text-xs sm:text-sm font-medium ${isSelected ? 'text-white' : 'text-gray-700'}`}>
-                              {service.name}
-                            </span>
-                          </label>
-                        );
-                      })}
+                    <label className="block text-sm font-medium text-gray-700 mb-2 sm:mb-3">Services souhaités *</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                      {services.map((service) => (
+                        <button
+                          key={service.id}
+                          type="button"
+                          onClick={() => handleServiceToggle(service.value)}
+                          className={`p-2 sm:p-3 text-left rounded-lg border-2 transition-all text-xs sm:text-sm ${
+                            formData.services.includes(service.value)
+                              ? "border-orange-500 bg-orange-50 text-orange-900 font-medium"
+                              : "border-gray-200 hover:border-orange-300 hover:bg-orange-50/50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            <div className={`w-4 h-4 rounded border-2 flex items-center justify-center ${
+                              formData.services.includes(service.value)
+                                ? "border-orange-500 bg-orange-500"
+                                : "border-gray-300"
+                            }`}>
+                              {formData.services.includes(service.value) && (
+                                <svg className="w-3 h-3 text-white" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path d="M5 13l4 4L19 7"></path>
+                                </svg>
+                              )}
+                            </div>
+                            <span>{service.name}</span>
+                          </div>
+                        </button>
+                      ))}
                     </div>
                   </div>
 
-                  {/* Détails du projet */}
                   <div>
-                    <label className="block text-xs sm:text-sm font-semibold mb-1.5 sm:mb-2 text-gray-700">
-                      Décrivez votre projet * <span className="text-gray-500 font-normal">(en quelques mots)</span>
-                    </label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1 sm:mb-2">Détails du projet</label>
                     <textarea
-                      required
                       value={formData.details}
-                      onChange={(e) =>
-                        setFormData({ ...formData, details: e.target.value })
-                      }
-                      rows={3}
-                      className="w-full px-3 py-2.5 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent resize-none transition-all"
-                      placeholder="Vos besoins principaux, vos objectifs..."
+                      onChange={(e) => setFormData({...formData, details: e.target.value})}
+                      rows={4}
+                      className="w-full px-3 py-2 sm:px-4 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none text-sm sm:text-base"
+                      placeholder="Décrivez votre projet..."
                     />
                   </div>
 
-                  {/* Status Messages */}
-                  <AnimatePresence>
-                    {submitStatus === "success" && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="p-3 sm:p-4 bg-green-50 border-2 border-green-200 rounded-lg sm:rounded-xl text-green-800 text-xs sm:text-sm"
-                      >
-                        <p className="font-semibold">✅ Demande envoyée !</p>
-                        <p className="text-xs mt-1">Vous recevrez une réponse détaillée sous 24h.</p>
-                      </motion.div>
-                    )}
-
-                    {submitStatus === "error" && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.95 }}
-                        className="p-3 sm:p-4 bg-red-50 border-2 border-red-200 rounded-lg sm:rounded-xl text-red-800 text-xs sm:text-sm"
-                      >
-                        ❌ Erreur. Réessayez ou appelez-nous au +33 7 49 41 27 56
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {/* Buttons */}
-                  <div className="flex gap-2 sm:gap-3 pt-2 sm:pt-4">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowForm(false)}
-                      disabled={isSubmitting}
-                      className="flex-1 border-2 hover:bg-gray-50 rounded-lg sm:rounded-xl py-4 sm:py-6 text-sm sm:text-base"
+                  {submitStatus === "success" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-3 sm:p-4 bg-green-50 border border-green-200 rounded-lg"
                     >
-                      Retour
-                    </Button>
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting || formData.services.length === 0}
-                      className="flex-1 bg-black hover:bg-gray-800 text-white rounded-lg sm:rounded-xl py-4 sm:py-6 disabled:opacity-50 text-sm sm:text-base"
+                      <p className="text-green-800 text-sm sm:text-base font-medium">✓ Devis envoyé avec succès ! Vous recevrez une réponse sous 24h.</p>
+                    </motion.div>
+                  )}
+
+                  {submitStatus === "error" && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="p-3 sm:p-4 bg-red-50 border border-red-200 rounded-lg"
                     >
-                      {isSubmitting ? (
-                        <>
-                          <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
-                          <span className="hidden sm:inline">Envoi...</span>
-                          <span className="sm:hidden">...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Send className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                          Envoyer
-                        </>
-                      )}
-                    </Button>
-                  </div>
+                      <p className="text-red-800 text-sm sm:text-base font-medium">✗ Erreur lors de l'envoi. Veuillez réessayer.</p>
+                    </motion.div>
+                  )}
+
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting || formData.services.length === 0}
+                    className="w-full py-4 sm:py-6 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-semibold rounded-xl transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                        Envoi en cours...
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-5 h-5 mr-2" />
+                        Envoyer ma demande
+                      </>
+                    )}
+                  </Button>
                 </motion.form>
               )}
             </div>
