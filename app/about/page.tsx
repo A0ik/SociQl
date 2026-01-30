@@ -38,6 +38,17 @@ const achievements = [
       'https://images.unsplash.com/photo-1626645738196-c2a7c87a8f58?w=400&h=300&fit=crop',
     logo: '🍗',
   },
+    {
+    icon: Utensils,
+    title: 'FastGarage - Site vitrine garage',
+    description:
+      'Site vitrine pour un garage sur Paris. Interface moderne, animation responsive sur mobile et pc, système de devis automatisé non réalisé.',
+    tech: ['React.js', 'Next.js', 'Tailwind CSS', 'Stripe'],
+    link: 'https://fastgarage-pi.vercel.app',
+    image: 'https://images.unsplash.com/photo-1619405399517-d7fce0f13302?q=80&w=2070',
+    category: 'Site vitrine ',
+    logo: '🚗',
+  },
   {
     icon: Utensils,
     title: 'Cagraille - Site Vitrine Restaurant',
@@ -161,7 +172,6 @@ export default function AboutPage() {
                   <span className="font-medium">{skill.name}</span>
                   <span className="text-gray-600">{skill.level}%</span>
                 </div>
-
                 <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
                   <motion.div
                     initial={{ width: 0 }}

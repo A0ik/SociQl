@@ -18,6 +18,15 @@ const projects = [
     category: 'Restaurant E-commerce',
   },
   {
+    title: 'FastGarage',
+    description:
+      'Site vitrine pour un garage sur Paris. Interface moderne, animation responsive sur mobile et pc, système de devis automatisé non réalisé.',
+    tech: ['React.js', 'Next.js', 'Tailwind CSS', 'Stripe'],
+    link: 'https://fastgarage-pi.vercel.app',
+    image: 'https://images.unsplash.com/photo-1619405399517-d7fce0f13302?q=80&w=2070',
+    category: 'Site vitrine ',
+  },
+  {
     title: 'Cagraille',
     description:
       "Site web pour un restaurant avec présentation des menus, galerie photos et système de contact. Design responsive et optimisé pour l'expérience utilisateur.",
